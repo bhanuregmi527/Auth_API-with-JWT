@@ -2,10 +2,13 @@ import userModel from "../model/User.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+
 dotenv.config()
 
 class UserController{
     static userRegistration = async (req,res)=>{
+       
+    
         const {name,email,password,password_confirm,tc}=req.body
         const user= await userModel.findOne({email:email})
         if(user){
@@ -42,6 +45,7 @@ class UserController{
     }
 
     static userLogin = async (req,res)=>{
+    
         try {
             const {email,password}=req.body
             if(email&&password){
@@ -78,10 +82,18 @@ class UserController{
             }else{
                 const salt= await bcrypt.genSalt(10) 
                 const newHashPassword= await bcrypt.hash(password,salt)
+                await userModel.findByIdAndUpdate(req.body._id, {$set:{
+                   password:newHashPassword 
+                }})
+                console.log(req.user)
+                res.send({"status":"failed","message":"Password Changed Succesfully"}) 
             }
         }else{
             res.send({"status":"failed","message":"All fields are required"}) 
         }
     }
+    static loggedUser = async (req, res) => {
+        res.send({ "user": req.user })
+      }
 }
 export default UserController

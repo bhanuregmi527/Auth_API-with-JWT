@@ -5,16 +5,23 @@ import cors from 'cors'
 import connectDb from './config/conect.js'
 import router from './routes/userRoutes.js'
 import bodyParser from 'body-parser'
+import path from 'path'
+
 
 const app=express()
 const DATABASE_URL=process.env.DATABASE_URL
 const port = process.env.PORT 
+//view//
+// app.set('view engine','ejs')
+
+
 //middleware
 app.use(cors())
 app.use(express.json())
 app.use("/api/user",router)
 app.use(bodyParser.urlencoded({ extended: true }));
 //
+
 
 
 //database
